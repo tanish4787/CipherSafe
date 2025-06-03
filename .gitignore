@@ -1,0 +1,95 @@
+# Node dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.nyc_output/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv environment variables
+.env
+.env.*.local
+.env.local
+.env.test
+.env.development
+.env.production
+
+# VSCode and IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS and system files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage/
+*.lcov
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Testing
+jest.config.js
+test-results/
+cypress/screenshots/
+cypress/videos/
+playwright-report/
+*.snap
+
+# Optional npm cache
+.npm/
+
+# Optional yarn cache
+.yarn/cache/
+
+# MongoDB dump
+dump/
+
+# Local history, temporary files
+.history/
+*.swp
+*.tmp
+
+# Firebase/other backend platform configs (optional)
+.firebase/
+.firebaserc
+
+# Misc
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+
+# Ignore any secrets
+secrets.*
+*.key
+*.crt
