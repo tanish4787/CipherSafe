@@ -1,6 +1,8 @@
 import dotenv from "dotenv"
 dotenv.config()
 import express from 'express'
+import connectDB from './db/db.js'
+connectDB()
 import cors from 'cors'
 import helmet from 'helmet'
 
