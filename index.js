@@ -3,8 +3,12 @@ dotenv.config()
 import express from 'express'
 import connectDB from './db/db.js'
 connectDB()
+import { clerkMiddleware } from '@clerk/express'
+
 import cors from 'cors'
 import helmet from 'helmet'
+import appRoutes from './routes/appRoutes.js'
+import breachRoutes from './routes/breachRoutes.js'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -12,12 +16,11 @@ const PORT = process.env.PORT || 3000
 
 app.use(cors())
 app.use(helmet())
+app.use(clerkMiddleware())
 app.use(express.json())
 
-app.get('/', (req, res) => {
-    res.send('CipherSafe API is running 🚀')
-})
-
+app.use('/app', appRoutes)
+app.use('/breach', breachRoutes)
 
 
 app.listen(PORT, () => {
