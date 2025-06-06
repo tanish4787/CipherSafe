@@ -1,4 +1,4 @@
-import { AppModel } from '../models/AppModel.js'
+import AppModel from '../models/AppModel.js'
 import sendResponse from '../utils/sendResponse.js'
 
 

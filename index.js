@@ -3,6 +3,7 @@ dotenv.config()
 import express from 'express'
 import connectDB from './db/db.js'
 connectDB()
+import './cron.js'
 import { clerkMiddleware } from '@clerk/express'
 
 import cors from 'cors'

@@ -1,6 +1,6 @@
 import BreachModel from '../models/BreachModel.js'
 import sendResponse from '../utils/sendResponse.js'
-import checkEmailBreach from '../services/breachService.js'
+import checkEmailBreach from '../services/breachCheckService.js'
 
 
 export const createBreachApp = async (req, res) => {
