@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer'
-import sendResponse from './sendResponse.js'
 
 const transporter = nodemailer.createTransport({
     secure: true,

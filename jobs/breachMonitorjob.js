@@ -1,8 +1,7 @@
-import AppModel from '../models/AppModel.js'
 import BreachModel from '../models/BreachModel.js'
 import checkEmailBreach from '../services/checkEmailBreach.js'
 import sendMail from '../utils/emailUtility.js'
-import sendResponse from '../utils/sendResponse.js'
+import { clerkClient } from '@clerk/clerk-sdk-node'
 
 const breachMonitorJob = async () => {
     try {
@@ -12,41 +11,43 @@ const breachMonitorJob = async () => {
             const result = await checkEmailBreach(app.email)
 
             if (result.success) {
-                const newStatus = result.breached ? 'breached' : 'safe';
-                const detailsChanged =
-                    JSON.stringify(app.details) !== JSON.stringify(result.details);
+                const newStatus = result.breached ? 'breached' : 'safe'
+                const detailsChanged = JSON.stringify(app.details) !== JSON.stringify(result.details)
 
                 if (app.status !== newStatus || detailsChanged) {
-                    app.status = newStatus;
-                    app.details = result.details;
-                    await app.save();
+                    app.status = newStatus
+                    app.details = result.details
+                    await app.save()
 
                     if (newStatus === 'breached') {
-                        const user = await UserModel.findById(app.userId);
-                        if (user?.email) {
+                        const user = await clerkClient.users.getUser(app.userId)
+                        const email = user?.emailAddresses?.[0]?.emailAddress
+                        const name = user?.firstName || user?.username || 'User'
+
+                        if (email) {
                             await sendMail(
-                                user.email,
+                                email,
                                 '⚠️ Data Breach Alert!',
                                 `
-                  <p>Hi ${user.name || 'User'},</p>
-                  <p>Your tracked app <strong>${app.appName}</strong> linked to <strong>${app.email}</strong> has been found in a data breach.</p>
-                  <p>Please log in to CipherSafe and take necessary actions.</p>
-                  <br/>
-                  <p>Stay Safe,<br/>CipherSafe Team</p>
-                `
-                            );
-                            console.log(`📧 Email sent to ${user.email} for app "${app.appName}"`);
+                <p>Hi ${name},</p>
+                <p>Your tracked app <strong>${app.appName}</strong> linked to <strong>${app.email}</strong> has been found in a data breach.</p>
+                <p>Please log in to CipherSafe and take necessary actions.</p>
+                <br/>
+                <p>Stay Safe,<br/>CipherSafe Team</p>
+              `
+                            )
+                            console.log(`📧 Email sent to ${email} for app "${app.appName}"`)
                         }
                     }
                 }
             } else {
-                console.error(`❌ Breach check failed for ${app.email}: ${result.message}`);
+                console.error(`❌ Breach check failed for ${app.email}: ${result.message}`)
             }
         }
 
-        console.log(`✅ Breach Monitor Job finished at ${new Date().toISOString()}`);
+        console.log(`✅ Breach Monitor Job finished at ${new Date().toISOString()}`)
     } catch (error) {
-        sendResponse(res, 400, false, null, error.message)
+        console.error('❌ Breach Monitor Job Error:', error.message)
     }
 }
 
