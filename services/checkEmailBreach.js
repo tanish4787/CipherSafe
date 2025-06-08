@@ -1,12 +1,12 @@
-import axios from 'axios';
+import axios from 'axios'
 
-const BASE_URL = 'https://api.xposedornot.com/v1/check/email/';
+const BASE_URL = 'https://api.xposedornot.com/v1/check/email/'
 
 const checkEmailBreach = async (email) => {
   try {
-    const { data } = await axios.get(`${BASE_URL}${encodeURIComponent(email)}`);
+    const { data } = await axios.get(`${BASE_URL}${encodeURIComponent(email)}`)
 
-    const breached = (data.Breaches?.length || 0) > 0 || (data.Pastes?.length || 0) > 0;
+    const breached = (data.Breaches?.length || 0) > 0 || (data.Pastes?.length || 0) > 0
 
     return {
       success: true,
@@ -15,7 +15,7 @@ const checkEmailBreach = async (email) => {
         breaches: data.Breaches || [],
         pastes: data.Pastes || [],
       },
-    };
+    }
   } catch (error) {
     return {
       success: false,
@@ -23,6 +23,6 @@ const checkEmailBreach = async (email) => {
         error.response?.data?.message || error.message || 'Failed to fetch breach data',
     };
   }
-};
+}
 
-export default checkEmailBreach;
+export default checkEmailBreach

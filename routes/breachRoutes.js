@@ -1,6 +1,6 @@
 import express from 'express'
 import fullAuth from '../middlewares/fullAuth.js'
-import { createBreachApp, getAllBreaches, updateBreach, deleteBreach } from '../controllers/breachroute.controller.js'
+import { createBreachApp, getAllBreaches, updateBreach, deleteBreach } from '../controllers/breachRoute.controller.js'
 const router = express.Router()
 
 

@@ -1,6 +1,7 @@
 import BreachModel from '../models/BreachModel.js'
 import checkEmailBreach from '../services/checkEmailBreach.js'
 import sendMail from '../utils/emailUtility.js'
+import { updateRiskScoresForUser } from '../services/riskScoreServices.js'
 import { clerkClient } from '@clerk/clerk-sdk-node'
 
 const breachMonitorJob = async () => {
@@ -38,6 +39,7 @@ const breachMonitorJob = async () => {
                             )
                             console.log(`📧 Email sent to ${email} for app "${app.appName}"`)
                         }
+                        await updateRiskScoresForUser(app.userId)
                     }
                 }
             } else {

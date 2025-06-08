@@ -1,19 +1,27 @@
 import AppModel from '../models/AppModel.js'
+import { calculateRiskScore } from '../services/riskScoreServices.js'
 import sendResponse from '../utils/sendResponse.js'
 
 
 export const createApp = async (req, res) => {
     try {
-        const { appName, sharedData } = req.body
+        const { appName, sharedData } = req.body;
 
         if (!appName || !sharedData) {
-            return handleError(res, "App Name or Shared Data fields required.")
+            return sendResponse(res, 400, false, null, "App Name or Shared Data fields required.");
         }
+
+        const { score, level } = calculateRiskScore({
+            sharedData,
+            breached: false,
+        })
 
         const newApp = new AppModel({
             userId: req.user.id,
             appName,
-            sharedData: sharedData || {}
+            sharedData,
+            riskScore: score,
+            riskLevel: level,
         })
 
         const saveApp = await newApp.save()
@@ -35,33 +43,42 @@ export const getAllApps = async (req, res) => {
     }
 }
 
+
 export const updateApp = async (req, res) => {
-
     try {
-        const { id } = req.params
-        if (!id) return sendResponse(res, 400, false, null, 'App ID is req in params')
+        const { id } = req.params;
+        const { appName, sharedData } = req.body;
 
+        if (!id) return sendResponse(res, 400, false, null, 'App ID is required in params');
 
-        const updatedApp = await AppModel.findOneAndUpdate(
-            {
-                _id: id,
-                userId: req.user.id
-            },
-            req.body,
-            { new: true }
-        )
+        const app = await AppModel.findOne({ _id: id, userId: req.user.id });
 
-        if (!updatedApp) {
-            return sendResponse(res, 400, false, null, "App not Found.")
+        if (!app) {
+            return sendResponse(res, 404, false, null, 'App not found');
         }
 
-        sendResponse(res, 201, true, updatedApp)
+        if (appName) app.appName = appName;
+
+        if (sharedData) {
+            app.sharedData = sharedData;
+
+            const { score, level } = calculateRiskScore({
+                sharedData,
+                breached: app.breachStatus === 'breached',
+            });
+
+            app.riskScore = score;
+            app.riskLevel = level;
+        }
+
+        const updatedApp = await app.save();
+        sendResponse(res, 200, true, updatedApp);
 
     } catch (error) {
-        sendResponse(res, 400, false, null, error.message)
-
+        sendResponse(res, 400, false, null, error.message);
     }
 }
+
 
 export const deleteApp = async (req, res) => {
 

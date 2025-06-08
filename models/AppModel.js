@@ -23,7 +23,17 @@ const appSchema = new mongoose.Schema({
         location: {
             type: Boolean,
             default: false
+        },
+        riskScore: {
+            type: Number,
+            default: 0,
+        },
+        riskLevel: {
+            type: String,
+            enum: ['Low', 'Medium', 'High'],
+            default: 'Low',
         }
+
     }
 
 }, { timestamps: true })
